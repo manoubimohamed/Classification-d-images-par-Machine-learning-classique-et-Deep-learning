@@ -1,0 +1,138 @@
+function cropped_un_flou=cropped_un_flou(I)  
+  
+%J'ajoute des condition de binarisation par exemple par floutage si flou seuil =0.1 sinon seil=0.3
+I1 =im2bw(I,0.1);
+%figure,imshow(I)
+s = regionprops(I1, 'BoundingBox', 'MajorAxisLength','MinorAxisLength', 'Centroid','Area','Eccentricity','Perimeter');
+
+for k=1:length(s)
+  
+  selectCoin = s(k).BoundingBox;
+  rectangle('Position', [selectCoin(1),selectCoin(2),selectCoin(3),selectCoin(4)],...
+  'EdgeColor','r','LineWidth',3 )
+  
+  
+  
+ score1(k) = abs(1-(s(k).MajorAxisLength-s(k).MinorAxisLength)...
+/max([s(k).MajorAxisLength,s(k).MinorAxisLength]));
+
+score2(k) = abs(1 - abs(pi*((mean([s(k).MajorAxisLength,...
+s(k).MinorAxisLength]))/2)^2-s(k).Area)/s(k).Area);
+
+score3(k) = abs(1 - abs(pi*(max([s(k).MajorAxisLength,...
+s(k).MinorAxisLength]))-s(k).Perimeter)/s(k).Perimeter);
+
+  score(k) = mean([score1(k);score2(k);score3(k)]);
+  
+  
+  if s(k).Area>5000 && score(k)<0.95
+    cropped_un_flou=transpose(imcrop(I,[s(k).BoundingBox]));
+  %figure,imshow(cropped_un_flou),title('Ordre 1');
+  
+end
+end
+
+end 
+%%%%%%%%%%%%%%%%%%ù%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function cropped_zero_nnflou=cropped_zero_nnflou(I)  
+I1 =im2bw(I,0.3);
+%figure,imshow(I)
+s = regionprops(I1, 'BoundingBox', 'MajorAxisLength','MinorAxisLength', 'Centroid','Area','Eccentricity','Perimeter');
+
+for k=1:length(s)
+  
+  selectCoin = s(k).BoundingBox;
+  rectangle('Position', [selectCoin(1),selectCoin(2),selectCoin(3),selectCoin(4)],...
+  'EdgeColor','r','LineWidth',3 )
+  
+  
+ score1(k) = abs(1-(s(k).MajorAxisLength-s(k).MinorAxisLength)...
+/max([s(k).MajorAxisLength,s(k).MinorAxisLength]));
+
+score2(k) = abs(1 - abs(pi*((mean([s(k).MajorAxisLength,...
+s(k).MinorAxisLength]))/2)^2-s(k).Area)/s(k).Area);
+
+score3(k) = abs(1 - abs(pi*(max([s(k).MajorAxisLength,...
+s(k).MinorAxisLength]))-s(k).Perimeter)/s(k).Perimeter);
+
+  score(k) = mean([score1(k);score2(k);score3(k)]);
+  
+  
+  if s(k).Area>5000 && score(k)>0.97
+    
+ cropped_zero_nnflou=imcrop(I,[s(k).BoundingBox]);
+  %figure,imshow(cropped_zero_nnflou),title('Ordre 0');
+end
+end
+
+end 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function cropped_un_nnflou=cropped_un_nnflou(I)  
+  
+%J'ajoute des condition de binarisation par exemple par floutage si flou seuil =0.1 sinon seil=0.3
+I1 =im2bw(I,0.3);
+%figure,imshow(I)
+s = regionprops(I1, 'BoundingBox', 'MajorAxisLength','MinorAxisLength','Centroid','Area','Eccentricity','Perimeter');
+for k=1:length(s)
+  
+  selectCoin = s(k).BoundingBox;
+  rectangle('Position', [selectCoin(1),selectCoin(2),selectCoin(3),selectCoin(4)],...
+  'EdgeColor','r','LineWidth',3 )
+  
+  
+ score1(k) = abs(1-(s(k).MajorAxisLength-s(k).MinorAxisLength)...
+/max([s(k).MajorAxisLength,s(k).MinorAxisLength]));
+
+score2(k) = abs(1 - abs(pi*((mean([s(k).MajorAxisLength,...
+s(k).MinorAxisLength]))/2)^2-s(k).Area)/s(k).Area);
+
+score3(k) = abs(1 - abs(pi*(max([s(k).MajorAxisLength,...
+s(k).MinorAxisLength]))-s(k).Perimeter)/s(k).Perimeter);
+
+  score(k) = mean([score1(k);score2(k);score3(k)]);
+  
+  
+  if s(k).Area>5000 && score(k)<0.95
+    cropped_un_nnflou=imcrop(I,[s(k).BoundingBox]);
+ %  figure,imshow(cropped_un_nnflou),title('Ordre 1');
+  
+end
+end
+
+end 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function cropped_zero_flou=cropped_zero_flou(I)  
+  
+%J'ajoute des condition de binarisation par exemple par floutage si flou seuil =0.1 sinon seil=0.3
+I1 =im2bw(I,0.15);
+%figure,imshow(I)
+s = regionprops(I1, 'BoundingBox', 'MajorAxisLength','MinorAxisLength', 'Centroid','Area','Eccentricity','Perimeter');
+for k=1:length(s)
+  
+  selectCoin = s(k).BoundingBox;
+  rectangle('Position', [selectCoin(1),selectCoin(2),selectCoin(3),selectCoin(4)],...
+  'EdgeColor','r','LineWidth',3 )
+  
+  
+ score1(k) = abs(1-(s(k).MajorAxisLength-s(k).MinorAxisLength)...
+/max([s(k).MajorAxisLength,s(k).MinorAxisLength]));
+
+score2(k) = abs(1 - abs(pi*((mean([s(k).MajorAxisLength,...
+s(k).MinorAxisLength]))/2)^2-s(k).Area)/s(k).Area);
+
+score3(k) = abs(1 - abs(pi*(max([s(k).MajorAxisLength,...
+s(k).MinorAxisLength]))-s(k).Perimeter)/s(k).Perimeter);
+
+  score(k) = mean([score1(k);score2(k);score3(k)]);
+  
+  
+  if s(k).Area>5000 && score(k)>0.95
+    
+ cropped_zero_flou=imcrop(I1,[s(k).BoundingBox]);
+  %figure,imshow(cropped_zero_flou),title('Ordre 0');
+  
+  
+end
+end
+
+end 
